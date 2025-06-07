@@ -4,6 +4,7 @@ import { BsPersonCircle } from "react-icons/bs";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import {toast} from 'react-hot-toast';
+import { createAccount } from "../Redux/Slices/AuthSlice";
 
 
 function Signup(){
@@ -48,7 +49,7 @@ function Signup(){
         }
     }
 
-    function createNewAccount(e){
+    async function createNewAccount(e){
         e.preventDefault();
         if(!signupData.email || !signupData.password || !signupData.fullName || !signupData.avatar){
             toast.error("Please fill all the details!!");
@@ -80,8 +81,12 @@ function Signup(){
         formData.append("avatar", signupData.avatar);
 
         //dispatch create account action
+        const response = await dispatch(createAccount(formData));
+        console.log(response);
+        if(response?.payload?.success)
+            navigate('/');
 
-        navigate("/");
+
         setSignupData({
             fullName: "",
             email: "",
