@@ -3,15 +3,15 @@ import toast from 'react-hot-toast';
 import axiosInstance from '../../Helpers/axiosInstance'
 
 const initialState = {
-        isLoggedIn: localStorage.getItem("isLoggedIn") || false,
-        role: localStorage.getItem("role") || "",
-        data: localStorage.getItem("data") || {},
+    isLoggedIn: localStorage.getItem("isLoggedIn") || false,
+    role: localStorage.getItem("role") || "",
+    data: localStorage.getItem("data") || {},
 };
 
 
 export const createAccount = createAsyncThunk("/auth/signup", async (data)=>{
     try{
-        const res = axiosInstance.post("/user/login",data);
+        const res = axiosInstance.post("user/register",data);
         toast.promise(res,{
             loading: "Wait! creating your account",
             success: (data) =>{
@@ -27,7 +27,7 @@ export const createAccount = createAsyncThunk("/auth/signup", async (data)=>{
 });
 
 
-export const login = createAsyncThunk("/auth/signup", async (data)=>{
+export const login = createAsyncThunk("/auth/login", async (data)=>{
     try{
         const res = axiosInstance.post("user/login",data);
         toast.promise(res,{
@@ -36,6 +36,23 @@ export const login = createAsyncThunk("/auth/signup", async (data)=>{
                 return data?.data?.message;
             },
             error:"Failed to log in!"
+
+        })
+        return (await res).data;
+    }catch(error){
+        toast.error(error?.response?.data?.message);
+    }
+});
+
+export const logout = createAsyncThunk("/auth/logout", async ()=>{
+    try{
+        const res = axiosInstance.post("user/logout");
+        toast.promise(res,{
+            loading: "Wait! logout is in process...",
+            success: (data) =>{
+                return data?.data?.message;
+            },
+            error:"Failed to log out!"
 
         })
         return (await res).data;
@@ -56,6 +73,12 @@ const authSlice = createSlice({
             state.isLoggedIn = true;
             state.data = action?.payload?.user;
             state.role = action?.payload?.user?.role;
+        })
+        .addCase(logout.fulfilled, (state)=>{
+            localStorage.clear();
+            state.isLoggedIn = false;
+            state.role = "";
+            state.data = {};
         })
     }
 });
