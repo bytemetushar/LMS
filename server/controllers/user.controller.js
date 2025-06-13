@@ -3,7 +3,7 @@ import User from "../models/user.model.js";
 import AppError from "../Utils/error.util.js";
 import cloudinary from 'cloudinary';
 import fs from 'fs/promises';
-import sendEmail from '../Utils/sendEmail.js';
+import { forgetPassword_Mail } from '../Utils/sendEmail.util.js';
 import crypto from 'crypto';
 
 const cookieOptions = {
@@ -173,7 +173,7 @@ const forgotPassword = async (req, res, next)=>{
 
     console.log(message);
     try{
-        await sendEmail(email, subject, message);
+        await forgetPassword_Mail(email, subject, message);
 
         res.status(200).json({
             success: true,

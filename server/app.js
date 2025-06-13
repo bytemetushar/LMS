@@ -6,8 +6,10 @@ import morgan from 'morgan';
 config();
 import userRoute from './routes/user.routes.js'
 import courseRoute from './routes/course.routes.js'
+import miscRoutes from './routes/miscellaneous.routes.js'
 import paymentRoute from './routes/payment.routes.js'
 import errorMiddleware from './middlewares/error.middleware.js';
+
 import dotenv from 'dotenv';    // import dotenv
 
 dotenv.config();
@@ -32,6 +34,7 @@ app.use('/ping',function(req,res){
 app.use('/api/v1/user', userRoute);
 app.use('/api/v1/courses', courseRoute);
 app.use('/api/v1/payments', paymentRoute);
+app.use('/api/v1/', miscRoutes);
 
 
 app.all('*',(req,res) =>{
