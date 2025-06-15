@@ -37,6 +37,10 @@ function Signup(){
 
         const uploadedImage = e.target.files[0];
         if(uploadedImage){
+            if(uploadedImage.size > 1024 * 1024 * 2){
+                toast.error("Image size should be less than 2 MB!!");
+                return;
+            }
             setSignupData({
                 ...signupData,
                 avatar: uploadedImage
