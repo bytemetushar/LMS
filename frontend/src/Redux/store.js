@@ -9,7 +9,7 @@ const store = configureStore({
         course: courseSliceReducer,
         razorpay: RazorpaySlice
     },
-    devTools: true
+    devTools: true,
 });
 
 export default store;

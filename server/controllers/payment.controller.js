@@ -17,7 +17,6 @@ const buySubscription = async (req, res, next) => {
         const {id} = req.user;
         const user = await User.findById(id);
 
-        console.log('user :>',user);
         if(!user){
             return next(new AppError('Unauthorized access, please login to access!', 404));
         }
@@ -28,7 +27,7 @@ const buySubscription = async (req, res, next) => {
         const user_subscription = await razorpay.subscriptions.create({
             plan_id: process.env.RAZORPAY_PLAN_ID,
             customer_notify: 1,
-            total_count: 12
+            total_count: 12,
         });
 
         user.subscription.id = user_subscription.id;
@@ -61,7 +60,7 @@ const verifySubscription = async (req, res, next) => {
         const subscriptionId  = user.subscription.id; 
 
         const generatedSignature = crypto
-            .createHmac('sha256', process.env.RAZORPAY_SECRET)
+            .createHmac('sha256', process.env.RAZORPAY_KEY_SECRET)
             .update(`${razorpay_payment_id}|${subscriptionId}`)
             .digest('hex');
 
