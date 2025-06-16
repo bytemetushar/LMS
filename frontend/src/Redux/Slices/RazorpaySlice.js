@@ -1,4 +1,4 @@
-import { createAsyncThunk } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import toast from "react-hot-toast";
 import axiosInstance from "../../Helpers/axiosInstance";
 
@@ -108,9 +108,7 @@ const razorpaySlice = createSlice({
                 state.finalMonths = action?.payload?.finalMonths;
                 state.monthlySalesRecord = action?.payload?.monthlySalesRecord;
             })
-            .addCase(cancelCourseBundle.fulfilled, (state) => {
-                state.isPaymentVerified = false;
-            });
+            
     }
 });
 

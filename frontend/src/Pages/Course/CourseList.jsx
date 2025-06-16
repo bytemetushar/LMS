@@ -29,7 +29,7 @@ function CourseList(){
                 </h1>
                 <div className="mb-10 text-xl flex flex-wrap gap-14">
                     {courseData?.map((element) => {
-                        return <CourseCard key={element.id} data={element}/>
+                        return <CourseCard key={element._id} data={element}/>
                     })}
                 </div>
                 
