@@ -47,8 +47,8 @@ function EditProfile(){
 
     async function onFormSubmit(e){
         e.preventDefault();
-        if(!data.fullName || !data.avatar){
-            toast.error("Please fill all the fields");
+        if(!data.fullName){
+            toast.error("Enter name is mendetory!");
             return;
         }
         if(data.fullName.length < 4){
