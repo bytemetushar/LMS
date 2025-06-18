@@ -75,7 +75,6 @@ const verifySubscription = async (req, res, next) => {
         });
         
         user.subscription.status = "ACTIVE";
-        user.markModified("subscription");
         await user.save();
 
         res.status(200).json({
