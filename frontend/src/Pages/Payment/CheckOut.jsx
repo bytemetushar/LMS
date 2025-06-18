@@ -5,7 +5,6 @@ import { getRazorPayId, purchaseCourseBundle, verifyUserPayment } from "../../Re
 import toast from "react-hot-toast";
 import HomeLayout from "../../Layouts/HomeLayout";
 import {BiRupee} from "react-icons/bi";
-import { getUserData } from "../../Redux/Slices/AuthSlice";
 
 
 function CheckOut(){
@@ -44,7 +43,6 @@ function CheckOut(){
                 toast.success("Payment successfull");
 
                 const res = await dispatch(verifyUserPayment(paymentDetails));
-                await dispatch(getUserData());
                 (res?.payload?.success) ? navigate("/checkout/success") : navigate("/checkout/fail");
             }
         }
