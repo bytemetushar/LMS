@@ -5,6 +5,7 @@ import { getRazorPayId, purchaseCourseBundle, verifyUserPayment } from "../../Re
 import toast from "react-hot-toast";
 import HomeLayout from "../../Layouts/HomeLayout";
 import {BiRupee} from "react-icons/bi";
+import { getUserData } from "../../Redux/Slices/AuthSlice";
 
 
 function CheckOut(){
@@ -13,8 +14,6 @@ function CheckOut(){
     const navigate = useNavigate();
     const razorpayKey = useSelector((state) => state?.razorpay?.key);
     const subscription_id = useSelector((state) => state?.razorpay?.subscription_id);
-    const userData = useSelector((state) => state?.auth?.data);
-    const isPaymentVerified = useSelector((state) => state?.razorpay?.isPaymentVerified);
     const paymentDetails = {
         razorpay_payment_id: "",
         razorpay_subscription_id: "",
@@ -45,7 +44,7 @@ function CheckOut(){
                 toast.success("Payment successfull");
 
                 const res = await dispatch(verifyUserPayment(paymentDetails));
-
+                await dispatch(getUserData());
                 (res?.payload?.success) ? navigate("/checkout/success") : navigate("/checkout/fail");
             }
         }

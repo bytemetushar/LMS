@@ -108,6 +108,14 @@ const razorpaySlice = createSlice({
                 state.finalMonths = action?.payload?.finalMonths;
                 state.monthlySalesRecord = action?.payload?.monthlySalesRecord;
             })
+            .addCase(cancelCourseBundle.fulfilled, (state,action) =>{
+                state.subscription_id = "";
+                state.isPaymentVerified = false;
+            })
+            .addCase(cancelCourseBundle.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.error.message;
+            });
             
     }
 });

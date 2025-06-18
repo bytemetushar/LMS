@@ -1,10 +1,25 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import HomeLayout from "../../Layouts/HomeLayout";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { cancelCourseBundle } from "../../Redux/Slices/RazorpaySlice";
+import { getUserData } from "../../Redux/Slices/AuthSlice";
+import toast from "react-hot-toast";
 
 function Profile(){
 
+    const dispatch = useDispatch();
     const userData = useSelector((state) => state?.auth?.data);
+    const navigate = useNavigate();
+
+    async function handleCancelation(){
+        await dispatch(cancelCourseBundle());
+        await dispatch(getUserData());
+
+        toast.success("Cancelation Completed");
+        navigate("/");
+        
+    }
+
 
     return(
         <HomeLayout>
@@ -21,7 +36,7 @@ function Profile(){
                     <div className="grid grid-cols-2">
                         <p>Email: </p><p>{userData?.email}</p>
                         <p>Role: </p><p>{userData.role}</p>
-                        <p>Subscription: </p><p>{userData?.subscription?.status  === "active" ? "Active" : "Inactive"}</p>
+                        <p>Subscription: </p><p>{userData?.subscription?.status  === "ACTIVE" ? "Active" : "Inactive"}</p>
                     </div>
                     <div className="flex items-center justify-between gap-2">
                         <Link 
@@ -36,8 +51,8 @@ function Profile(){
                         </Link>
                     </div>
 
-                    {userData?.subscription?.status === "active" && (
-                        <button className="w-full bg-transparent hover:bg-red-800 hover:border-red-800 border border-accent transition-all ease-in-out rounded-sm font-semibold py-2 duration-300">
+                    {userData?.subscription?.status === "ACTIVE" && (
+                        <button onClick={handleCancelation} className="w-full bg-transparent hover:bg-red-800 hover:border-red-800 border border-accent transition-all ease-in-out rounded-sm font-semibold py-2 duration-300">
                             Cancel Subscription
                         </button>
                     )}
