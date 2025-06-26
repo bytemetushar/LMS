@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import HomeLayout from "../../Layouts/HomeLayout";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { getCourseLectures } from "../../Redux/Slices/LectureSlice";
+import { deleteCourseLecture, getCourseLectures } from "../../Redux/Slices/LectureSlice";
 
 function DisplayLectures(){
 
@@ -14,6 +14,11 @@ function DisplayLectures(){
 
     const [currentVideo, setCurrentVideo] = useState(0);
 
+    async function onLectureDelete(courseId, lectureId){
+        await dispatch(deleteCourseLecture({courseId: courseId, lectureId: lectureId}));
+        await dispatch(getCourseLectures(courseId));
+    }
+
     useEffect(()=>{
         if(!state) navigate("/courses");
         dispatch(getCourseLectures(state._id))
@@ -23,13 +28,13 @@ function DisplayLectures(){
     return (
         <HomeLayout>
             <div className="flex flex-col gap-10 items-center justify-center min-h-[90vh] py-10 text-white mx-">
-                <div className="text-center text-2xl font-semibold text-yellow-500">
+                <div className="text-center text-2xl font-semibold text-yellow-400">
                     Course Name: {state?.title}
                 </div>
 
-                <div className="flex justify-center gap-10 w-full">
+                {lectures && lectures.length > 0 && <div className="flex justify-center gap-10 w-full">
                     {/* left section for playing video and displaying details to admin */}
-                    <div className="space-y-5 w-[20rem] p-2 rounded-lg shadow-[0_0_10px_black]">
+                    <div className="space-y-5 w-[28rem] p-2 rounded-lg shadow-[0_0_10px_black]">
                         <video src={lectures && lectures[currentVideo]?.lecture?.secure_url}
                             className="object-fill rounded-tl-lg rounded-tr-lg w-full"
                             controls
@@ -38,8 +43,53 @@ function DisplayLectures(){
                             controlsList="nodownload"
                         >
                         </video>
+                        <div>
+                            <h1>
+                                <span className="text-yellow-500">
+                                    Titile: {" "}
+                                </span>
+                                {lectures && lectures[currentVideo]?.title}
+                            </h1>
+                            <p>
+                                <span className="text-yellow-500 line-clamp-4">
+                                    Description: {" "}
+                                </span>
+                                {lectures && lectures[currentVideo]?.description}
+                            </p>
+                        </div>
                     </div>
-                </div>
+
+                    {/** right screen fr displaying list of lectures */}
+                    <ul className="w-[28rem] p-2 rounded-lg shadow-[0_0_10px_black] space-y-4">
+                        <li className="fnt-semibold text-xl text-yellow-500 flex items-center justify-between">
+                            <p>Lectures List</p>
+                            {role === "ADMIN" && (
+                                <button onClick={()=> navigate("/course/addlecture", {state: {...state}})} className="bg-blue-900 px-2 py-1 rounded-md font-semibold text-white text-sm">
+                                    Add new Lecture
+                                </button>
+                            )}
+                        </li>
+                        {lectures && 
+                            lectures.map((lecture, idx)=>{
+                                return (
+                                    <li className="space-y-2" key={lecture._id}>
+                                        <p className="cursor-pointer" onClick={()=> setCurrentVideo(idx)}>
+                                            <span>
+                                                {" "}Lecture {idx + 1}: {" "}
+                                            </span>
+                                            {lecture?.title}
+                                        </p>
+                                        {role === "ADMIN" && (
+                                            <button onClick={() => onLectureDelete(state?._id, lecture?._id)} className="bg-red-600 px-2 py-1 rounded-md font-semibold text-sm">
+                                                Delete Lecture
+                                            </button>
+                                        )}
+                                    </li>
+                                )
+                            })
+                        }
+                    </ul>
+                </div>}
             </div>
         </HomeLayout>
     )
