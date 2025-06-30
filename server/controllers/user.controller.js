@@ -38,7 +38,7 @@ const register = async (req, res,next)=>{
             role,
             avatar: {
                 public_id: req.file ? req.file.filename : email,
-                secure_url: req.file ? `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}` : 'https://drive.google.com/file/d/1gnXAJZh-Of70TzpU1Meja4TAgqc6CVe7/view'
+                secure_url: req.file ? `${req.protocol}://${req.get('host')}/uploads/images/${req.file.filename}` : 'https://drive.google.com/file/d/1gnXAJZh-Of70TzpU1Meja4TAgqc6CVe7/view'
             }
         });
 
@@ -65,7 +65,7 @@ const register = async (req, res,next)=>{
                     }
 
                     // remove file from server
-                    fs.rm(`uploads/${req.file.filename}`)
+                    await fs.rm(`uploads/images/${req.file.filename}`)
                 }
             }catch(err){
                 return next(new AppError(err ||'Image upload failed, try again!!', 500));

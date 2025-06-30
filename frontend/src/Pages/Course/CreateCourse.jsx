@@ -21,9 +21,8 @@ function CreateCourse(){
     });
 
     function handleImageUpload(e){
-        e.preventDefault();
+
         const uploadedImage = e.target.files[0];
-        if(uploadedImage){
             if(uploadedImage.size > 1024 * 1024){ // 1MB limit
                 toast.error("Image size should be less than 1MB");
                 return;
@@ -35,10 +34,10 @@ function CreateCourse(){
                     ...userInput,
                     thumbnail: uploadedImage,
                     previewImage: fileReader.result
-                })
+                });
             })
-        }
     }
+
 
 
     function handleUserInput(e){
@@ -67,8 +66,11 @@ function CreateCourse(){
                 thumbnail : null,
                 previewImage: ""
             });
+            
         }
-        navigate("/courses");
+        setTimeout(() => navigate("/courses"), 0);
+        
+        
     }
 
     return(
@@ -79,8 +81,8 @@ function CreateCourse(){
                     className="flex flex-col justify-center gap-5 p-4 rounded-lg text-white w-[700px] my-10 shadow-[0_0_10px_black] relative"
                 >
 
-                    <Link className="absolute top-6 text-2xl link text-accent">
-                        <AiOutlineArrowLeft onClick={navigate(-1)}/>
+                    <Link className="absolute top-6 text-2xl link text-accent" onClick={() => navigate(-1)}>
+                        <AiOutlineArrowLeft/>
                     </Link>
 
                     <h1 className="text-2xl font-bold text-center">

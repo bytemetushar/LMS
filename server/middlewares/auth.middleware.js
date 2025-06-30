@@ -24,7 +24,7 @@ const authorizedRoles = (...roles) => async (req, res, next) => {
 
 const authorizeSubscriber = async (req,  res, next)=>{
     const user = await User.findById(req.user.id);
-    if(user.currentUserRoles !== 'ADMIN' && user.subscription.status !== 'ACTIVE'){
+    if(user.role !== 'ADMIN' && user.subscription.status !== 'ACTIVE'){
         return next(new AppError('please subscribe to access this route!',403));
     }
     next();

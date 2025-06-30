@@ -1,57 +1,36 @@
-// import path from 'path';
-// import multer from 'multer';
-
-// const upload = multer({
-//     dest: "uploads/",
-//     limits:{fileSize: 50*1024*1024}, //50MB in max size limit
-//     storage: multer.diskStorage({
-//         destination: (req, file, cb)=>{
-//             cb(null, file.originalname);
-//         },
-//     }),
-//     fileFilter: (_req, file, cb)=>{
-//         let ext = path.extname(file.originalname);
-
-//         if(
-//             ext !== '.jpg' &&
-//             ext !== '.jpeg' &&
-//             ext !== '.webp' &&
-//             ext !== '.png' &&
-//             ext !== '.mp4'
-//         ){
-//             cb(new Error('File type is not supported'), false);
-//             return;
-//         }
-//         cb(null, true);
-//     },
-// });
-
-
-
-
-
-import multer from 'multer';
 import path from 'path';
+import multer from 'multer';
+import fs from 'fs'
 
+
+if (!fs.existsSync("uploads/images")) fs.mkdirSync("uploads/images", { recursive: true });
+if (!fs.existsSync("uploads/videos")) fs.mkdirSync("uploads/videos", { recursive: true });
+
+
+// Image multer ----------------------
 // Set storage engine
-const storage = multer.diskStorage({
-    destination: 'uploads/',
+const imageStorage = multer.diskStorage({
+    destination: 'uploads/images/',
     filename: (req, file, cb) => {
         cb(null, `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`);
     }
 });
 
-// Initialize upload
-const upload = multer({
-    storage: storage,
-    limits: { fileSize: 1000000 }, // 1MB limit
-    fileFilter: (req, file, cb) => {
-        checkFileType(file, cb);
+
+
+const videoStorage = multer.diskStorage({
+    destination: 'uploads/videos/',
+    filename: (req, file, cb) => {
+        cb(null, `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`);
     }
 });
 
+
 // Check file type
 function checkFileType(file, cb) {
+    if (!file || !file.originalname) {
+        return cb(new Error("Invalid file"));
+    }
     const filetypes = /jpeg|jpg|png|webp/;
     const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
     const mimetype = filetypes.test(file.mimetype);
@@ -63,4 +42,40 @@ function checkFileType(file, cb) {
     }
 }
 
-export default upload;
+
+// Check file type
+function checkVideoFileType(req, file, cb) {
+    const filetypes = /mp4|mov|avi|mkv/;
+    const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+    const mimetype = filetypes.test(file.mimetype);
+
+    if (mimetype && extname) {
+        return cb(null, true);
+    } else {
+        cb(new Error('Error: Images Only!'));
+    }
+}
+
+
+const uploadImage = multer({
+    storage: imageStorage,
+    limits: { fileSize: 1000000 }, // 1MB limit
+    fileFilter: (req,file, cb)=>{
+        checkFileType(file,cb);
+    }
+});
+
+
+const uploadVideo = multer({
+    storage: videoStorage,
+    limits: { fileSize: 100*1024*1024 }, // 100MB limit
+    fileFilter: checkVideoFileType
+});
+
+
+
+
+export{
+    uploadImage,
+    uploadVideo
+};
